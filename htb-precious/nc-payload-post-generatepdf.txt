@@ -1,0 +1,7 @@
+POST / HTTP/1.0
+Host: precious.htb
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 27
+
+url=http%3A%2F%2Fgooglsdf
+
