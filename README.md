@@ -7,6 +7,6 @@ I use this repo as a workspace and for documenting the path I found for gaining 
 ## Boxes
 These are the different boxes
 - [Metasploitable3](https://github.com/caldito/writeups/blob/main/metasploitable3)
-- [HTB precious (WIP)](https://github.com/caldito/writeups/blob/main/htb-precious)
+- [HTB precious](https://github.com/caldito/writeups/blob/main/htb-precious)
 
 
