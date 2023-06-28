@@ -3,6 +3,12 @@
 ## Info
 ip: 10.10.11.211
 
+htb easy
+
+linux
+
+Topics: web service exploitation, DB credentials, Docker, SUID
+
 ## Info gathering
 When doing ping we can see that we are against a Linux VM since ping is close to 64
 
@@ -86,7 +92,7 @@ Mysql container seems tight in security but we already have some level of access
 
 When checking the SUID files available we see the /sbin/capsh. In [GTFOBins](https://gtfobins.github.io/gtfobins/capsh/) we can see how to exploit it. With `capsh --gid=0 --uid=0 --` we'll turn our shell to root. After gaining access we need to run `chmod u+s /bin/bash`.
 
-Once bash has SUID we can run the exploit for CVE-2021-41091 from the user `marcus` in the host where we already have access. Then we have root access.
+Once bash has SUID we can run the exploit for CVE-2021-41091 from the user `marcus` in the host where we already have access. [This](https://github.com/UncleJ4ck/CVE-2021-41091/blob/main/exp.sh) is the exploit I used. Then we have root access.
 
 ```
 marcus@monitorstwo:/tmp$ cd /var/lib/docker/overlay2/c41d5854e43bd996e128d647cb526b73d04c9ad6325201c85f73fdba372cb2f1/merged

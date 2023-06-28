@@ -34,3 +34,8 @@ non system users: `john` and `dev`
 other interesting users: `mysql`, `neo4j` and `lxd`. The first two services must be either down or only available from inside.
 
 
+Webapps in `/var/www/beta.only4you.htb` and `/var/www/beta.only4you.htb`. Nginx does a proxypass to the unix sockets `proxy_pass http://unix:/var/www/only4you.htb/only4you.sock` and `proxy_pass http://unix:/var/www/beta.only4you.htb/beta.sock` respectively.
+
+SSH allows password authentication.
+
+
